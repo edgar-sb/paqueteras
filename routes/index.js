@@ -2,11 +2,12 @@ var express = require("express");
 var router = express.Router();
 var FormData = require("form-data");
 var axios = require("axios");
+const async_hooks = require("async_hooks");
 
 router.get("/remesa", (req, res, next) => {
   var order_id = req.query.order_id; // resivimos por parametro get el id de la orden
-  var rfc_id = req.query.rfc_id; // resivimos por parametro get el rfc 
-  var tipo_de_envio_id = req.query.tipo_de_envio_id // tipo de envio P, S ,
+  var rfc_id = req.query.rfc_id; // resivimos por parametro get el rfc
+  var tipo_de_envio_id = req.query.tipo_de_envio_id; // tipo de envio P, S ,
   var data = new FormData();
 
   var config = {
@@ -35,7 +36,10 @@ router.get("/remesa", (req, res, next) => {
         cporigen: "03630",
         correoorigen: "pruebas@eurocotton.com",
         telefonoorigen: "525543774538",
-        nombredestino: response.data.clientProfileData.firstName + ' ' + response.data.clientProfileData.lastName,
+        nombredestino:
+          response.data.clientProfileData.firstName +
+          " " +
+          response.data.clientProfileData.lastName,
         rfcdestino: "Nodeclarado",
         direcciondestino: "CALLE 14 3",
         coloniadestino: "Reforma Social",
@@ -81,4 +85,19 @@ router.get("/test", (req, res, next) => {
   res.redirect("remesa?id=1143693399500");
 });
 
+router.get("/hook", (req, res, next) => {
+  const exec_id = async_hooks.executionAsyncId();
+  const trigger_id = async_hooks.triggerAsyncId();
+  const asyncHook = async_hooks.createHook({
+    init: function (asyncId, type, triggerAsyncId, resource) {console.log(`${asyncId} ${type} ${triggerAsyncId} ${resource}`)},
+     /*
+     before: function (asyncId) { },
+     after: function (asyncId) { },
+     destroy: function (asyncId) { },
+     promiseResolve: function (asyncId) { }
+     */
+  });
+  asyncHook.enable();
+  asyncHook.disable();
+});
 module.exports = router;
