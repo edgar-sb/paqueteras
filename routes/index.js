@@ -1,10 +1,11 @@
 var express = require("express");
 var router = express.Router();
-var axios = require("axios");
 var FormData = require("form-data");
-//remesa?order_id=1143693399500-01&tipo_de_envio_id=S
+var axios = require("axios");
+
 router.get("/remesa", (req, res, next) => {
   var order_id = req.query.order_id; // resivimos por parametro get el id de la orden
+  var rfc_id = req.query.rfc_id; // resivimos por parametro get el rfc 
   var tipo_de_envio_id = req.query.tipo_de_envio_id // tipo de envio P, S ,
   var data = new FormData();
 
@@ -42,7 +43,7 @@ router.get("/remesa", (req, res, next) => {
         correodestino: response.data.clientProfileData.email,
         telefonodestino: response.data.clientProfileData.phone,
         tipoentrega: 1,
-        tipoenvio: tipo_de_envio_id,
+        tipoenvio: "S",
         envios: envios,
         numeropedido: order_id,
         referencia: "Nodeclarado",
@@ -77,7 +78,7 @@ router.get("/remesa", (req, res, next) => {
 });
 
 router.get("/test", (req, res, next) => {
-  res.redirect("remesa?id=1143693399500&tipo_de_envio_id=S");
+  res.redirect("remesa?id=1143693399500");
 });
 
 module.exports = router;
