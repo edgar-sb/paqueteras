@@ -91,7 +91,8 @@ router.get("/test", (req, res, next) => {
 });
 
 router.post("/hook", (req, res, next) => {
-  processSomething(() => {
+  processSomething((par) => {
+    console.log(par)
     res.status(200).send({
         id: "ABC123",
         message: "New record added!"
