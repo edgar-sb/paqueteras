@@ -4,10 +4,9 @@ var FormData = require("form-data");
 var axios = require("axios");
 const async_hooks = require("async_hooks");
 
-const processSomething = callback => {
-    setTimeout(callback, 2000);
-}
-
+const processSomething = (callback) => {
+  setTimeout(callback, 2000);
+};
 
 router.get("/remesa", (req, res, next) => {
   var order_id = req.query.order_id; // resivimos por parametro get el id de la orden
@@ -91,11 +90,12 @@ router.get("/test", (req, res, next) => {
 });
 
 router.post("/hook", (req, res, next) => {
-  processSomething((par) => {
-    console.log(par)
+  processSomething(() => {
+    console.log(req);
+    console.log(res);
     res.status(200).send({
-        id: "ABC123",
-        message: "New record added!"
+      id: "ABC123",
+      message: "New record added!",
     });
   });
 });
