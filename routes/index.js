@@ -4,6 +4,11 @@ var FormData = require("form-data");
 var axios = require("axios");
 const async_hooks = require("async_hooks");
 
+const processSomething = callback => {
+    setTimeout(callback, 2000);
+}
+
+
 router.get("/remesa", (req, res, next) => {
   var order_id = req.query.order_id; // resivimos por parametro get el id de la orden
   var rfc_id = req.query.rfc_id; // resivimos por parametro get el rfc
@@ -85,19 +90,12 @@ router.get("/test", (req, res, next) => {
   res.redirect("remesa?id=1143693399500");
 });
 
-router.get("/hook", (req, res, next) => {
-  const exec_id = async_hooks.executionAsyncId();
-  const trigger_id = async_hooks.triggerAsyncId();
-  const asyncHook = async_hooks.createHook({
-    init: function (asyncId, type, triggerAsyncId, resource) {console.log(`${asyncId} ${type} ${triggerAsyncId} ${resource}`)},
-     /*
-     before: function (asyncId) { },
-     after: function (asyncId) { },
-     destroy: function (asyncId) { },
-     promiseResolve: function (asyncId) { }
-     */
+router.post("/hook", (req, res, next) => {
+  processSomething(() => {
+    res.status(200).send({
+        id: "ABC123",
+        message: "New record added!"
+    });
   });
-  asyncHook.enable();
-  asyncHook.disable();
 });
 module.exports = router;
