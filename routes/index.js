@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
 var axios = require("axios");
+var FormData = require("form-data");
 //remesa?order_id=1143693399500-01&tipo_de_envio_id=S
 router.get("/remesa", (req, res, next) => {
   var order_id = req.query.order_id; // resivimos por parametro get el id de la orden
   var tipo_de_envio_id = req.query.tipo_de_envio_id // tipo de envio P, S ,
-  var FormData = require("form-data");
   var data = new FormData();
 
   var config = {
