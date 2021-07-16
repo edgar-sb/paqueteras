@@ -1,22 +1,16 @@
 var express = require("express");
 var router = express.Router();
-var FormData = require("form-data");
 var axios = require("axios");
-const async_hooks = require("async_hooks");
+var FormData = require("form-data");
+var paqueteria = require("../deliverysMode/deliveryDeside");
 
-const processSomething = (callback) => {
-  setTimeout(callback, 2000);
-};
-
-router.get("/remesa", (req, res, next) => {
-  var order_id = req.query.order_id; // resivimos por parametro get el id de la orden
-  var rfc_id = req.query.rfc_id; // resivimos por parametro get el rfc
-  var tipo_de_envio_id = req.query.tipo_de_envio_id; // tipo de envio P, S ,
+router.get("/cartaporteById", async(req, res, next) => {
+  let cartaPorteById = req.query.id;
   var data = new FormData();
 
   var config = {
     method: "get",
-    url: `http://eurocotton.vtexcommercestable.com.br/api/oms/pvt/orders/${order_id}`,
+    url: `http://eurocotton.vtexcommercestable.com.br/api/oms/pvt/orders/${cartaPorteById}`,
     headers: {
       "X-VTEX-API-AppKey": "vtexappkey-eurocotton-PSTXNG",
       "X-VTEX-API-AppToken":
@@ -27,76 +21,23 @@ router.get("/remesa", (req, res, next) => {
     },
     data: data,
   };
-  axios(config)
-    .then(function (response) {
-      var envios = response.data.items.length;
-      var data = JSON.stringify({
-        usuario: "amecotweb",
-        password: "cotton2021",
-        nombreorigen: "EuroCotton",
-        rfcorigen: "NODECLARADO",
-        direccionorigen: "CIUDAD DE MÉXICO MEX Doctor José María Vertiz 1168 1",
-        coloniaorigen: "INDEPENDENCIA",
-        cporigen: "03630",
-        correoorigen: "pruebas@eurocotton.com",
-        telefonoorigen: "525543774538",
-        nombredestino:
-          response.data.clientProfileData.firstName +
-          " " +
-          response.data.clientProfileData.lastName,
-        rfcdestino: "Nodeclarado",
-        direcciondestino: "CALLE 14 3",
-        coloniadestino: "Reforma Social",
-        cpdestino: response.data.shippingData.address.postalCode,
-        correodestino: response.data.clientProfileData.email,
-        telefonodestino: response.data.clientProfileData.phone,
-        tipoentrega: 1,
-        tipoenvio: "S",
-        envios: envios,
-        numeropedido: order_id,
-        referencia: "Nodeclarado",
-        codigomercancia: 34,
-        largo: 3000,
-        alto: 3000,
-        ancho: 300,
-        peso: 1,
-        valordeclarado: response.data.totals[0].value,
-      });
 
-      var config = {
-        method: "post",
-        url: "https://webservice.odmexpress.com.mx/odmexpress/Remesa",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
-
-      axios(config)
-        .then(function (resP) {
-          res.send(JSON.stringify(resP.data));
-        })
-        .catch(function (error) {
-          res.render("error", { message: "" });
-        });
+  var getShipVtexById = await axios(config)
+    .then((res) => {
+      return res.data;
     })
-    .catch(function (error) {
-      res.render("error", { message: error });
+    .catch((err) => {
+      return err;
     });
+
+  paqueteria(getShipVtexById, req, res);
 });
 
-router.get("/test", (req, res, next) => {
-  res.redirect("remesa?id=1143693399500");
-});
 
-router.post("/hook", (req, res, next) => {
-  processSomething(() => {
-    console.log(req);
-    console.log(res);
-    res.status(200).send({
-      id: "ABC123",
-      message: "New record added!",
-    });
-  });
-});
+router.get("/getPdf", async(req, res, next) => {
+  let name = req.query.id;
+  const file = `${__dirname}/Documents/${name}.pdf`;
+  res.download(file); // Set disposition and send it.
+})
+
 module.exports = router;
