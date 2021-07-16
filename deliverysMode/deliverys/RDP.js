@@ -1,12 +1,13 @@
 const axios = require("axios");
 const FormData = require("form-data");
 const pdf = require("base64topdf");
+const Mailer = require("../../mailer/index")
 
 class RedPack {
   path = "https://apiqa.redpack.com.mx:5600/redpack/";
   kewyword = "odm";
 
-  formatDocument(response) {
+  formatDocument(response, resServer) {
     let addres = response.shippingData.address;
     var envios = response.items.length;
     var deliverys = response.shippingData.logisticsInfo;
@@ -85,12 +86,12 @@ class RedPack {
             trackingNumber: ".",
           },
         ];
-        this.createRem(data);
+        this.createRem(data, resServer);
       }
     }
   }
 
-  createRem(data) {
+  createRem(data, resServer) {
     this.token()
       .then((token) => {
         var config = {
@@ -107,14 +108,17 @@ class RedPack {
           .then((res) => {
             var pdf_g = res.data[0].parcels[0].label;
             var name_g = res.data[0].trackingNumber;
-            this.createPdf(pdf_g,"name_g");
-            console.log(res.data[0].parcels[0].label);
+            this.createPdf(pdf_g,name_g);
+            /* console.log(res.data[0].parcels[0].label); */
+            new Mailer("PDF GENERADO EXITOSAMENTE","Redpack",`https://deliveryspackage.herokuapp.com/routes/Documents/${name_g}`,resServer)
           })
           .catch((err) => {
-            console.log(err);
+            resServer.json({"message":"Error"});
           });
       })
-      .catch();
+      .catch(err => {
+        resServer.json({"message":"Error"});
+      });
   }
 
   async token() {

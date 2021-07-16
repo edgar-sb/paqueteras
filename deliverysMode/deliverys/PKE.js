@@ -1,13 +1,13 @@
 const axios = require("axios");
-
+const Mailer = require("../../mailer/index")
 class PaqueteExpress {
   keyword = "odm"; //nombre clave de la paquetera
 
-  path = "http://qaglp.paquetexpress.mx:7007/RadRestFul/api/rad"; //path de la api
-  path_pdf =
-    "http://qaglp.paquetexpress.mx:8083/wsReportPaquetexpress/GenCartaPorte?trackingNoGen/MTY01WE0005051"; //path de donde se guardan los pdf
+   path = "http://qaglp.paquetexpress.mx:7007/RadRestFul/api/rad"; //path de la api
+   path_pdf =
+    "http://qaglp.paquetexpress.mx:8083/wsReportPaquetexpress/GenCartaPorte?trackingNoGen/"; //path de donde se guardan los pdf
 
-  formatDocument(response) {
+  formatDocument(response,resServer) {
     this.token().then(token => {
       var data = {
         header: {
@@ -110,14 +110,19 @@ class PaqueteExpress {
 
       axios(config)
           .then((res) => {
-            console.log(res.data.body)
+            var pdfArray = res.data.body.response.objectDTO.split(":");
+            var pdf = pdfArray[1];
+            console.log(pdfArray)
+            new Mailer("PDF GENERADO EXITOSAMENTE","paquetexpress",`http://qaglp.paquetexpress.mx:8083/wsReportPaquetexpress/GenCartaPorte?trackingNoGen/${pdf}`,resServer)
           })
           .catch((e) => {
-            console.log(e);
+            console.log(e)
+            resServer.json({"message":"error1"})
           });
-    }).catch(
-      console.log("Error")
-    );
+    }).catch(e => {
+      console.log(e)
+      resServer.json({"message":"error2"})
+    });
 
   }
 
@@ -139,7 +144,7 @@ class PaqueteExpress {
         return response.data.body.response.data.token;
       })
       .catch(function (error) {
-        return error;
+        return "error";
       });
 
     return token;

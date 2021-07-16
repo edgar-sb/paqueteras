@@ -1,11 +1,11 @@
 const axios = require("axios");
 const FormData = require("form-data");
-const Mailer = require("../../mailer/index");
+const Mailer = require("../../mailer/index")
 
 class ODM {
   documents = [];
 
-  formatDocument(response) {
+  formatDocument(response, res) {
     var deliverys = response.shippingData.logisticsInfo;
     for (let delivery = 0; delivery < deliverys.length; delivery++) {
       let shipingDelivery = deliverys[delivery].deliveryIds;
@@ -43,12 +43,12 @@ class ODM {
           peso: dimensions.weight,
           valordeclarado: response.totals[0].value,
         });
-        this.createRem(data);
+        this.createRem(data, res);
       }
     }
   }
 
-  createRem(data) {
+  createRem(data, resServer) {
     var config = {
       method: "post",
       url: "https://webservice.odmexpress.com.mx/odmexpress/Remesa",
@@ -60,13 +60,15 @@ class ODM {
     axios(config)
       .then(function (res) {
         if (!res.data.error) {
-          Mailer("PDF","ODM",res.data.urlCartaPorte);
+         new Mailer("PDF GENERADO EXITOSAMENTE","ODM",res.data.urlCartaPorte,resServer)
         } else {
-          console.log(data);
+          resServer.json({"message": res.data.error})
         }
       })
       .catch(function (error) {
-        console.log(error);
+        /* ¿Qué ocurre si el servidor deODM no responde? */
+        resServer.json({"message":"ODM NO RESPONDE"})
+        
       });
   }
 }
