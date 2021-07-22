@@ -42,7 +42,7 @@ class RedPack {
               street: "MEX Doctor José María Vertiz 1168 1",
               suburb: "INDEPENDENCIA",
               zipCode: "03630",
-            },
+            }, 
             parcels: [
               {
                 description: "string",
