@@ -13,8 +13,7 @@ class RedPack {
     var deliverys = response.shippingData.logisticsInfo;
     for (let delivery = 0; delivery < deliverys.length; delivery++) {
       let shipingDelivery = deliverys[delivery].deliveryIds;
-      let dimensions =
-        response.items[deliverys[delivery].itemIndex].additionalInfo.dimension;
+      let dimensions = response.items[deliverys[delivery].itemIndex].additionalInfo.dimension;
       for (let x = 0; x < shipingDelivery.length; x++) {
         var data = [
           {
