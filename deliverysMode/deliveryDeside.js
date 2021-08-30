@@ -4,7 +4,7 @@ const PKE = require("./deliverys/PKE");
 /* new Mailer("PDF GENERADO EXITOSAMENTE","ODM",res.data.urlCartaPorte,resServer) */
 module.exports = paqueteras = (pack, req, res) => {
   const deliverys = {
-    ["ODM"] : (data)=> {
+    ["Odm"] : (data)=> {
       var document_odm = new ODM();
       document_odm.formatDocument(data, res )
     },

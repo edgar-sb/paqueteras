@@ -4,9 +4,7 @@ const pdf = require("base64topdf");
 const Mailer = require("../../mailer/index")
 
 class RedPack {
-  path = "https://apiqa.redpack.com.mx:5600/redpack/";
-  kewyword = "odm";
-
+  
   formatDocument(response, resServer) {
     let addres = response.shippingData.address;
     var envios = response.items.length;

@@ -1,11 +1,12 @@
 const axios = require("axios");
 const Mailer = require("../../mailer/index")
 class PaqueteExpress {
-  keyword = "odm"; //nombre clave de la paquetera
-
-   path = "http://qaglp.paquetexpress.mx:7007/RadRestFul/api/rad"; //path de la api
-   path_pdf =
+   
+  constructor(){
+   this.path = "http://qaglp.paquetexpress.mx:7007/RadRestFul/api/rad"; //path de la api
+   this.path_pdf =
     "http://qaglp.paquetexpress.mx:8083/wsReportPaquetexpress/GenCartaPorte?trackingNoGen/"; //path de donde se guardan los pdf
+  }
 
   formatDocument(response,resServer) {
     this.token().then(token => {

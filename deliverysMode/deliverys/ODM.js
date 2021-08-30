@@ -3,8 +3,6 @@ const FormData = require("form-data");
 const Mailer = require("../../mailer/index")
 
 class ODM {
-  documents = [];
-
   formatDocument(response, res) {
     var deliverys = response.shippingData.logisticsInfo;
     for (let delivery = 0; delivery < deliverys.length; delivery++) {
@@ -50,12 +48,12 @@ class ODM {
 
   createRem(data, resServer) {
     var config = {
-      method: "post",
-      url: "https://webservice.odmexpress.com.mx/odmexpress/Remesa",
-      headers: {
-        "Content-Type": "application/json",
+      method: 'post',
+      url: 'https://webservice.odmexpress.com.mx/odmexpress/Remesa',
+      headers: { 
+        'Content-Type': 'application/json'
       },
-      data: data,
+      data : data
     };
     axios(config)
       .then(function (res) {
@@ -67,7 +65,7 @@ class ODM {
       })
       .catch(function (error) {
         /* ¿Qué ocurre si el servidor deODM no responde? */
-        resServer.json({"message":"ODM NO RESPONDE"})
+        resServer.json({"message": error})
         
       });
   }
