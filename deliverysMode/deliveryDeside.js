@@ -21,6 +21,14 @@ module.exports = paqueteras = (pack, req, res) => {
       // var document_odm = new ODM();
       // document_odm.formatDocument(data, res);
     },
+    ["Dhl Día Siguiente"]: (data) => {
+      var document_dhl = new DHL();
+      document_dhl.formatDocument(data, res);
+    },
+    ["Dhl Preferente"]: (data) => {
+      var document_dhl = new DHL();
+      document_dhl.formatDocument(data, res);
+    },
     ["Dhl Estandar"]: (data) => {
       var document_dhl = new DHL();
       document_dhl.formatDocument(data, res);
