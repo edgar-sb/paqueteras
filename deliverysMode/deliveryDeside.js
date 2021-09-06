@@ -18,7 +18,8 @@ module.exports = paqueteras = (pack, req, res) => {
       document_pke.formatDocument(data, res);
     },
     ["Estafetav2"]: (data) => {
-      res.json({ "message": `No hay metodo implementado` });
+      // var document_odm = new ODM();
+      // document_odm.formatDocument(data, res);
     },
     ["Dhl Estandar"]: (data) => {
       var document_dhl = new DHL();
