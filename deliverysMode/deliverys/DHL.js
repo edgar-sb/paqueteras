@@ -178,7 +178,7 @@ class DHL {
                 var file = XMLResponse_DHLEstandar['res:ShipmentResponse'].LabelImage[0].OutputImage[0],
                     name = dataOrder.orderId;
                 pdf.base64Decode(file, `./routes/Documents/${name}.pdf`);
-                new Mailer("PDF GENERADO EXITOSAMENTE", "DHL", `https://deliveryspackage.herokuapp.com/routes/Documents/${name}.pdf`, responseMethod);
+                new Mailer("PDF GENERADO EXITOSAMENTE", "DHL", `https://deliverysid.herokuapp.com/routes/Documents/${name}.pdf`, responseMethod);
             })
             .catch((error) => {
                 console.log(error);
