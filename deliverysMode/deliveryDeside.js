@@ -20,6 +20,14 @@ module.exports = paqueteras = (pack, req, res) => {
     ["Estafetav2"]: (data) => {
       res.json({ "message": `No hay metodo implementado` });
     },
+    ["Dhl Día Siguiente"]: (data) => {
+      var document_dhl = new DHL();
+      document_dhl.formatDocument(data, res);
+    },
+    ["Dhl Preferente"]: (data) => {
+      var document_dhl = new DHL();
+      document_dhl.formatDocument(data, res);
+    },
     ["Dhl Estandar"]: (data) => {
       var document_dhl = new DHL();
       document_dhl.formatDocument(data, res);

@@ -11,6 +11,7 @@ class DHL {
         // 
         var dataOrder = parameterData,
             items = parameterData.items,
+            clientProfileData = parameterData.clientProfileData,
             shippingData = parameterData.shippingData,
             paymentData = parameterData.paymentData,
             storePreferencesData = parameterData.storePreferencesData;
@@ -26,43 +27,40 @@ class DHL {
             NodeXML_Billing_ShipperAccountNumber = "980383984",
             NodeXML_Billing_ShippingPaymentType = "S",
             NodeXML_Consignee_CompanyName = "Eurocotton",
-            NodeXML_Consignee_AddressLine1 = "CIUDAD DE MÉXICO MEX Doctor José María Vertiz 1168 1",
-            NodeXML_Consignee_AddressLine2 = "",
-            NodeXML_Consignee_City = "CDMX",
-            NodeXML_Consignee_PostalCode = "03630",
+            NodeXML_Consignee_AddressLine1 = "CIUDAD DE MEXICO, MEXICO",
+            NodeXML_Consignee_AddressLine2 = "DOCTOR JOSE MARIA VERTIZ 1168 1",
+            NodeXML_Consignee_City = "SONORA",
+            NodeXML_Consignee_PostalCode = "85870",
             NodeXML_Consignee_CountryCode = "MX",
             NodeXML_Consignee_CountryName = "MEXICO",
             NodeXML_Consignee_Contact_PersonName = "Adrian Mejia",
             NodeXML_Consignee_Contact_PhoneNumber = "525543774538",
             NodeXML_Consignee_Contact_Email = "prueba@eurocotton.com",
-            NodeXML_Reference_ReferenceID = "20210618ECOFE218442",
+            NodeXML_Reference_ReferenceID = dataOrder.orderId,
             NodeXML_Reference_ReferenceType = "St",
             NodeXML_ShipmentDetails_Pieces_Piece = "",
             NodeXML_ShipmentDetails_WeightUnit = "K",
             NodeXML_ShipmentDetails_GlobalProductCode = "N",
             NodeXML_ShipmentDetails_LocalProductCode = "N",
-            NodeXML_ShipmentDetails_Date = "2021-09-03",
+            NodeXML_ShipmentDetails_Date = new Date().toISOString().split("T")[0],
             NodeXML_ShipmentDetails_Contents = "ARTICULOS VARIOS",
             NodeXML_ShipmentDetails_DimensionUnit = "C",
             NodeXML_ShipmentDetails_PackageType = "CP",
             NodeXML_ShipmentDetails_IsDutiable = "N",
             NodeXML_ShipmentDetails_CurrencyCode = "MXN",
             NodeXML_Shipper_ShipperID = "980383984",
-            NodeXML_Shipper_CompanyName = "AMERICAN COTTON",
-            NodeXML_Shipper_AddressLine1 = "AVENIDA SIEMPREVIVA",
-            NodeXML_Shipper_AddressLine2 = "COYOACAN",
-            NodeXML_Shipper_City = "Ciudad de México",
-            NodeXML_Shipper_Division = "COLONIA, REFERENCIAS ADICIONALES",
-            NodeXML_Shipper_PostalCode = "04450",
+            NodeXML_Shipper_CompanyName = clientProfileData.firstName + ' ' + clientProfileData.lastName,
+            NodeXML_Shipper_AddressLine1 = shippingData.address.city,
+            NodeXML_Shipper_AddressLine2 = shippingData.address.state,
+            NodeXML_Shipper_City = shippingData.address.city,
+            NodeXML_Shipper_Division = shippingData.address.addressType,
+            NodeXML_Shipper_PostalCode = shippingData.address.postalCode,
             NodeXML_Shipper_CountryCode = "MX",
             NodeXML_Shipper_CountryName = "MEXICO",
-            NodeXML_Shipper_Contact_PersonName = "MILOS ADRIAN TEODORI PEREZ",
-            NodeXML_Shipper_Contact_PhoneNumber = "55555555",
-            NodeXML_Shipper_Contact_PhoneExtension = "5555",
-            NodeXML_Shipper_Contact_Email = "prueba@prueba.com",
-            NodeXML_SpecialService_SpecialServiceType = "II",
-            NodeXML_SpecialService_ChargeValue = "2726.00",
-            NodeXML_SpecialService_CurrencyCode = "MXN",
+            NodeXML_Shipper_Contact_PersonName = clientProfileData.firstName + ' ' + clientProfileData.lastName,
+            NodeXML_Shipper_Contact_PhoneNumber = clientProfileData.phone,
+            NodeXML_Shipper_Contact_PhoneExtension = "",
+            NodeXML_Shipper_Contact_Email = clientProfileData.email,
             NodeXML_EProcShip = "N",
             NodeXML_LabelImageFormat = "PDF",
             NodeXML_RequestArchiveDoc = "Y",
@@ -70,6 +68,7 @@ class DHL {
             NodeXML_Label_LabelTemplate = "8X4_PDF";
         // 
         items.forEach(element => {
+            // 
             NodeXML_ShipmentDetails_Pieces_Piece += '' +
                 '<Piece>' +
                     '<PieceID>' + element.id + '</PieceID>' +
@@ -77,7 +76,7 @@ class DHL {
                     '<Weight>' + element.additionalInfo.dimension.weight + '</Weight>' +
                     '<Width>' + element.additionalInfo.dimension.width + '</Width>' +
                     '<Height>' + element.additionalInfo.dimension.height + '</Height>' +
-                    '<Depth>43</Depth>' +
+                    '<Depth>' + element.additionalInfo.dimension.length + '</Depth>' +
                 '</Piece>' +
             '';
         });
@@ -150,11 +149,6 @@ class DHL {
                         '<Email>' + NodeXML_Shipper_Contact_Email + '</Email>' +
                     '</Contact>' +
                 '</Shipper>' +
-                '<SpecialService>' +
-                    '<SpecialServiceType>' + NodeXML_SpecialService_SpecialServiceType + '</SpecialServiceType>' +
-                    '<ChargeValue>' + NodeXML_SpecialService_ChargeValue + '</ChargeValue>' +
-                    '<CurrencyCode>' + NodeXML_SpecialService_CurrencyCode + '</CurrencyCode>' +
-                '</SpecialService>' +
                 '<EProcShip>' + NodeXML_EProcShip + '</EProcShip>' +
                 '<LabelImageFormat>' + NodeXML_LabelImageFormat + '</LabelImageFormat>' +
                 '<RequestArchiveDoc>' + NodeXML_RequestArchiveDoc + '</RequestArchiveDoc>' +
