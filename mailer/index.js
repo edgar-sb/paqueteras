@@ -14,7 +14,10 @@ class MailerSend {
 
     var configurations = {
       from: "edgar.edgarroman@gmail.com",
-      to: ["edgar@space.bar", "eduardo@space.bar"],
+      to: [
+        "edgar@space.bar",
+        "eduardo@space.bar"
+      ],
       subject: `PDF de ${of}`,
       text: message,
       html: `<div><span>Puedes descargar la carta porte en esta <a href="${pdf}">liga</a></span></div>`,
