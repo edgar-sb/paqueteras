@@ -22,9 +22,9 @@ class MailerSend {
 
     transporter.sendMail(configurations, (error, info) => {
       if (error) {
-        res.json({"message": error})
+        res.json({ "message": error })
       } else {
-      res.json({"message":info})
+        res.json({ "message": info })
       }
     });
   }

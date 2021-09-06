@@ -7,55 +7,184 @@ const parseString = require('xml2js').parseString;
 class DHL {
     formatDocument(parameterData, responseMethod) {
         // 
-        var stringDHLEstandar = "";
+        var TemplateXML_DHLEstandar = "";
         // 
-        var items = parameterData.items,
+        var dataOrder = parameterData,
+            items = parameterData.items,
             shippingData = parameterData.shippingData,
             paymentData = parameterData.paymentData,
             storePreferencesData = parameterData.storePreferencesData;
         // 
-        var NodeXML_ServiceHeader_MessageTime = "2002-08-20T11:28:56.000-08:00",
-            NodeXML_ServiceHeader_MessageReference = "1234567890123456789012345678901",
-            NodeXML_ServiceHeader_SiteID = "v62_ykyVpd8ccd",
-            NodeXML_ServiceHeader_Password = "ltQUE2tRGx",
-            NodeXML_MetaData_SoftwareName = "3PV",
-            NodeXML_MetaData_SoftwareVersion = "1.0",
-            NodeXML_From_CountryCode = "MX",
-            NodeXML_From_Postalcode = "03630",
-            NodeXML_BkgDetails_PaymentCountryCode = "MX",
-            NodeXML_BkgDetails_Date = new Date().toISOString(),
-            NodeXML_BkgDetails_ReadyTime = "PT10H21M",
-            NodeXML_BkgDetails_ReadyTimeGMTOffset = "+01:00",
-            NodeXML_BkgDetails_DimensionUnit = "CM",
-            NodeXML_BkgDetails_WeightUnit = "KG",
-            NodeXML_BkgDetails_Pieces = "",
-            NodeXML_BkgDetails_IsDutiable = "Y",
-            NodeXML_BkgDetails_NetworkTypeCode = "MX",
-            NodeXML_BkgDetails_InsuredValue = "555.000",
-            NodeXML_BkgDetails_InsuredCurrency = "EUR",
-            NodeXML_To_CountryCode = "US",
-            NodeXML_To_Postalcode = "86001",
-            NodeXML_Dutiable_DeclaredCurrency = "EUR",
-            NodeXML_Dutiable_DeclaredValue = "234.0";
+        var NodeXML_Request_ServiceHeader_MessageTime = "2021-06-18T10:15:33-06:00",
+            NodeXML_Request_ServiceHeader_MessageReference = "0000000000000020210618218442",
+            NodeXML_Request_ServiceHeader_SiteID = "v62_ykyVpd8ccd",
+            NodeXML_Request_ServiceHeader_Password = "ltQUE2tRGx",
+            NodeXML_RegionCode = "AM",
+            NodeXML_RequestedPickupTime = "Y",
+            NodeXML_NewShipper = "Y",
+            NodeXML_LanguageCode = "ES",
+            NodeXML_Billing_ShipperAccountNumber = "980383984",
+            NodeXML_Billing_ShippingPaymentType = "S",
+            NodeXML_Consignee_CompanyName = "Eurocotton",
+            NodeXML_Consignee_AddressLine1 = "CIUDAD DE MÉXICO MEX Doctor José María Vertiz 1168 1",
+            NodeXML_Consignee_AddressLine2 = "",
+            NodeXML_Consignee_City = "CDMX",
+            NodeXML_Consignee_PostalCode = "03630",
+            NodeXML_Consignee_CountryCode = "MX",
+            NodeXML_Consignee_CountryName = "MEXICO",
+            NodeXML_Consignee_Contact_PersonName = "Adrian Mejia",
+            NodeXML_Consignee_Contact_PhoneNumber = "525543774538",
+            NodeXML_Consignee_Contact_Email = "prueba@eurocotton.com",
+            NodeXML_Reference_ReferenceID = "20210618ECOFE218442",
+            NodeXML_Reference_ReferenceType = "St",
+            NodeXML_ShipmentDetails_Pieces_Piece = "",
+            NodeXML_ShipmentDetails_WeightUnit = "K",
+            NodeXML_ShipmentDetails_GlobalProductCode = "N",
+            NodeXML_ShipmentDetails_LocalProductCode = "N",
+            NodeXML_ShipmentDetails_Date = "2021-09-03",
+            NodeXML_ShipmentDetails_Contents = "ARTICULOS VARIOS",
+            NodeXML_ShipmentDetails_DimensionUnit = "C",
+            NodeXML_ShipmentDetails_PackageType = "CP",
+            NodeXML_ShipmentDetails_IsDutiable = "N",
+            NodeXML_ShipmentDetails_CurrencyCode = "MXN",
+            NodeXML_Shipper_ShipperID = "980383984",
+            NodeXML_Shipper_CompanyName = "AMERICAN COTTON",
+            NodeXML_Shipper_AddressLine1 = "AVENIDA SIEMPREVIVA",
+            NodeXML_Shipper_AddressLine2 = "COYOACAN",
+            NodeXML_Shipper_City = "Ciudad de México",
+            NodeXML_Shipper_Division = "COLONIA, REFERENCIAS ADICIONALES",
+            NodeXML_Shipper_PostalCode = "04450",
+            NodeXML_Shipper_CountryCode = "MX",
+            NodeXML_Shipper_CountryName = "MEXICO",
+            NodeXML_Shipper_Contact_PersonName = "MILOS ADRIAN TEODORI PEREZ",
+            NodeXML_Shipper_Contact_PhoneNumber = "55555555",
+            NodeXML_Shipper_Contact_PhoneExtension = "5555",
+            NodeXML_Shipper_Contact_Email = "prueba@prueba.com",
+            NodeXML_SpecialService_SpecialServiceType = "II",
+            NodeXML_SpecialService_ChargeValue = "2726.00",
+            NodeXML_SpecialService_CurrencyCode = "MXN",
+            NodeXML_EProcShip = "N",
+            NodeXML_LabelImageFormat = "PDF",
+            NodeXML_RequestArchiveDoc = "Y",
+            NodeXML_NumberOfArchiveDoc = "2",
+            NodeXML_Label_LabelTemplate = "8X4_PDF";
         // 
         items.forEach(element => {
-            NodeXML_BkgDetails_Pieces += '<Piece>\n          <PieceID>' + element.id + '</PieceID>\n          <Height>' + element.additionalInfo.dimension.height + '</Height>\n          <Depth>20</Depth>\n          <Width>' + element.additionalInfo.dimension.width + '</Width>\n          <Weight>' + element.additionalInfo.dimension.weight + '</Weight>\n        </Piece>\n      ';
+            NodeXML_ShipmentDetails_Pieces_Piece += '' +
+                '<Piece>' +
+                    '<PieceID>' + element.id + '</PieceID>' +
+                    '<PackageType>CP</PackageType>' +
+                    '<Weight>' + element.additionalInfo.dimension.weight + '</Weight>' +
+                    '<Width>' + element.additionalInfo.dimension.width + '</Width>' +
+                    '<Height>' + element.additionalInfo.dimension.height + '</Height>' +
+                    '<Depth>43</Depth>' +
+                '</Piece>' +
+            '';
         });
-        //
-        stringDHLEstandar = '<?xml version="1.0" encoding="utf-8"?>\n<p:DCTRequest xmlns:p="http://www.dhl.com" xmlns:p1="http://www.dhl.com/datatypes" xmlns:p2="http://www.dhl.com/DCTRequestdatatypes" schemaVersion="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dhl.com DCT-req.xsd ">\n  <GetCapability>\n    <Request>\n      <ServiceHeader>\n        <MessageTime>' + NodeXML_ServiceHeader_MessageTime + '</MessageTime>\n        <MessageReference>' + NodeXML_ServiceHeader_MessageReference + '</MessageReference>\n\t\t<SiteID>' + NodeXML_ServiceHeader_SiteID + '</SiteID>\n\t\t<Password>' + NodeXML_ServiceHeader_Password + '</Password>\n      </ServiceHeader>\n\t  <MetaData>\n\t\t\t<SoftwareName>' + NodeXML_MetaData_SoftwareName + '</SoftwareName>\n\t\t\t<SoftwareVersion>' + NodeXML_MetaData_SoftwareVersion + '</SoftwareVersion>\n\t\t</MetaData>\n    </Request>\n    <From>\n      <CountryCode>' + NodeXML_From_CountryCode + '</CountryCode>\n      <Postalcode>' + NodeXML_From_Postalcode + '</Postalcode>\n    </From>\n    <BkgDetails>\n      <PaymentCountryCode>' + NodeXML_BkgDetails_PaymentCountryCode + '</PaymentCountryCode>\n      <Date>' + NodeXML_BkgDetails_Date + '</Date><ReadyTime>' + NodeXML_BkgDetails_ReadyTime + '</ReadyTime>\n      <ReadyTimeGMTOffset>' + NodeXML_BkgDetails_ReadyTimeGMTOffset + '</ReadyTimeGMTOffset>\n      <DimensionUnit>' + NodeXML_BkgDetails_DimensionUnit + '</DimensionUnit>\n      <WeightUnit>' + NodeXML_BkgDetails_WeightUnit + '</WeightUnit>\n      <Pieces>\n        ' + NodeXML_BkgDetails_Pieces + '</Pieces>      \n      <IsDutiable>' + NodeXML_BkgDetails_IsDutiable + '</IsDutiable>\n      <NetworkTypeCode>' + NodeXML_BkgDetails_NetworkTypeCode + '</NetworkTypeCode>\n      <InsuredValue>' + NodeXML_BkgDetails_InsuredValue + '</InsuredValue>\n      <InsuredCurrency>' + NodeXML_BkgDetails_InsuredCurrency + '</InsuredCurrency>\n    </BkgDetails>\n    <To>\n      <CountryCode>' + NodeXML_To_CountryCode + '</CountryCode>\n      <Postalcode>' + NodeXML_To_Postalcode + '</Postalcode>\n    </To>\n   <Dutiable>\n      <DeclaredCurrency>' + NodeXML_Dutiable_DeclaredCurrency + '</DeclaredCurrency>\n      <DeclaredValue>' + NodeXML_Dutiable_DeclaredValue + '</DeclaredValue>\n    </Dutiable>\n  </GetCapability>\n</p:DCTRequest>\n';
+        // 
+        TemplateXML_DHLEstandar = '' + 
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' +
+            '<req:ShipmentRequest xmlns:req="http://www.dhl.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dhl.com ship-val-global-req.xsd" schemaVersion="10.0">' +
+                '<Request>' +
+                    '<ServiceHeader>' +
+                        '<MessageTime>' + NodeXML_Request_ServiceHeader_MessageTime + '</MessageTime>' +
+                        '<MessageReference>' + NodeXML_Request_ServiceHeader_MessageReference + '</MessageReference>' +
+                        '<SiteID>' + NodeXML_Request_ServiceHeader_SiteID + '</SiteID>' +
+                        '<Password>' + NodeXML_Request_ServiceHeader_Password + '</Password>' +
+                    '</ServiceHeader>' +
+                '</Request>' +
+                '<RegionCode>' + NodeXML_RegionCode + '</RegionCode>' +
+                '<RequestedPickupTime>' + NodeXML_RequestedPickupTime + '</RequestedPickupTime>' +
+                '<NewShipper>' + NodeXML_NewShipper + '</NewShipper>' +
+                '<LanguageCode>' + NodeXML_LanguageCode + '</LanguageCode>' +
+                '<Billing>' +
+                    '<ShipperAccountNumber>' + NodeXML_Billing_ShipperAccountNumber + '</ShipperAccountNumber>' +
+                    '<ShippingPaymentType>' + NodeXML_Billing_ShippingPaymentType + '</ShippingPaymentType>' +
+                '</Billing>' +
+                '<Consignee>' +
+                    '<CompanyName>' + NodeXML_Consignee_CompanyName + '</CompanyName>' +
+                    '<AddressLine1>' + NodeXML_Consignee_AddressLine1 + '</AddressLine1>' +
+                    '<AddressLine2>' + NodeXML_Consignee_AddressLine2 + '</AddressLine2>' +
+                    '<City>' + NodeXML_Consignee_City + '</City>' +
+                    '<PostalCode>' + NodeXML_Consignee_PostalCode + '</PostalCode>' +
+                    '<CountryCode>' + NodeXML_Consignee_CountryCode + '</CountryCode>' +
+                    '<CountryName>' + NodeXML_Consignee_CountryName + '</CountryName>' +
+                    '<Contact>' +
+                        '<PersonName>' + NodeXML_Consignee_Contact_PersonName + '</PersonName>' +
+                        '<PhoneNumber>' + NodeXML_Consignee_Contact_PhoneNumber + '</PhoneNumber>' +
+                        '<Email>' + NodeXML_Consignee_Contact_Email + '</Email>' +
+                    '</Contact>' +
+                '</Consignee>' +
+                '<Reference>' +
+                    '<ReferenceID>' + NodeXML_Reference_ReferenceID + '</ReferenceID>' +
+                    '<ReferenceType>' + NodeXML_Reference_ReferenceType + '</ReferenceType>' +
+                '</Reference>' +
+                '<ShipmentDetails>' +
+                    '<Pieces>' +
+                        NodeXML_ShipmentDetails_Pieces_Piece +
+                    '</Pieces>' +
+                    '<WeightUnit>' + NodeXML_ShipmentDetails_WeightUnit + '</WeightUnit>' +
+                    '<GlobalProductCode>' + NodeXML_ShipmentDetails_GlobalProductCode + '</GlobalProductCode>' +
+                    '<LocalProductCode>' + NodeXML_ShipmentDetails_LocalProductCode + '</LocalProductCode>' +
+                    '<Date>' + NodeXML_ShipmentDetails_Date + '</Date>' +
+                    '<Contents>' + NodeXML_ShipmentDetails_Contents + '</Contents>' +
+                    '<DimensionUnit>' + NodeXML_ShipmentDetails_DimensionUnit + '</DimensionUnit>' +
+                    '<PackageType>' + NodeXML_ShipmentDetails_PackageType + '</PackageType>' +
+                    '<IsDutiable>' + NodeXML_ShipmentDetails_IsDutiable + '</IsDutiable>' +
+                    '<CurrencyCode>' + NodeXML_ShipmentDetails_CurrencyCode + '</CurrencyCode>' +
+                '</ShipmentDetails>' +
+                '<Shipper>' +
+                    '<ShipperID>' + NodeXML_Shipper_ShipperID + '</ShipperID>' +
+                    '<CompanyName>' + NodeXML_Shipper_CompanyName + '</CompanyName>' +
+                    '<AddressLine1>' + NodeXML_Shipper_AddressLine1 + '</AddressLine1>' +
+                    '<AddressLine2>' + NodeXML_Shipper_AddressLine2 + '</AddressLine2>' +
+                    '<City>' + NodeXML_Shipper_City + '</City>' +
+                    '<Division>' + NodeXML_Shipper_Division + '</Division>' +
+                    '<PostalCode>' + NodeXML_Shipper_PostalCode + '</PostalCode>' +
+                    '<CountryCode>' + NodeXML_Shipper_CountryCode + '</CountryCode>' +
+                    '<CountryName>' + NodeXML_Shipper_CountryName + '</CountryName>' +
+                    '<Contact>' +
+                        '<PersonName>' + NodeXML_Shipper_Contact_PersonName + '</PersonName>' +
+                        '<PhoneNumber>' + NodeXML_Shipper_Contact_PhoneNumber + '</PhoneNumber>' +
+                        '<PhoneExtension>' + NodeXML_Shipper_Contact_PhoneExtension + '</PhoneExtension>' +
+                        '<Email>' + NodeXML_Shipper_Contact_Email + '</Email>' +
+                    '</Contact>' +
+                '</Shipper>' +
+                '<SpecialService>' +
+                    '<SpecialServiceType>' + NodeXML_SpecialService_SpecialServiceType + '</SpecialServiceType>' +
+                    '<ChargeValue>' + NodeXML_SpecialService_ChargeValue + '</ChargeValue>' +
+                    '<CurrencyCode>' + NodeXML_SpecialService_CurrencyCode + '</CurrencyCode>' +
+                '</SpecialService>' +
+                '<EProcShip>' + NodeXML_EProcShip + '</EProcShip>' +
+                '<LabelImageFormat>' + NodeXML_LabelImageFormat + '</LabelImageFormat>' +
+                '<RequestArchiveDoc>' + NodeXML_RequestArchiveDoc + '</RequestArchiveDoc>' +
+                '<NumberOfArchiveDoc>' + NodeXML_NumberOfArchiveDoc + '</NumberOfArchiveDoc>' +
+                '<Label>' +
+                    '<LabelTemplate>' + NodeXML_Label_LabelTemplate + '</LabelTemplate>' +
+                '</Label>' +
+            '</req:ShipmentRequest>' +
+        '';
         // 
         var config = {
-            method: 'post',
+            method: 'GET',
             url: 'https://xmlpi-ea.dhl.com/XMLShippingServlet',
             headers: {
                 'Content-Type': 'application/xml'
             },
-            data: stringDHLEstandar
+            data: TemplateXML_DHLEstandar
         };
         // 
         axios(config)
             .then((response) => {
                 console.log(response);
+                var XMLResponse_DHLEstandar;
+                parseString(response.data, (error, result) => {
+                    XMLResponse_DHLEstandar = result;
+                });
+                var file = XMLResponse_DHLEstandar['res:ShipmentResponse'].LabelImage[0].OutputImage[0],
+                    name = dataOrder.orderId;
+                pdf.base64Decode(file, `./routes/Documents/${name}.pdf`);
+                new Mailer("PDF GENERADO EXITOSAMENTE", "DHL", `https://deliveryspackage.herokuapp.com/routes/Documents/${name}.pdf`, responseMethod);
             })
             .catch((error) => {
                 console.log(error);
